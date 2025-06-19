@@ -1,0 +1,1063 @@
+// Contact Form submission
+        document.querySelector('#contact form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('Thank you for your inquiry! We will get back to you soon.');
+            this.reset();
+        });<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Elite Interiors - Professional Interior Design Services</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/emailjs-com/3.2.0/email.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1rem 0;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            text-decoration: none;
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+        }
+
+        .nav-links a:hover {
+            background: rgba(255,255,255,0.2);
+            transform: translateY(-2px);
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-align: center;
+            padding: 150px 0 100px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="50" cy="50" r="0.5" fill="white" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+            animation: float 20s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            opacity: 0;
+            animation: slideInUp 1s ease forwards;
+        }
+
+        .hero p {
+            font-size: 1.3rem;
+            margin-bottom: 2rem;
+            opacity: 0;
+            animation: slideInUp 1s ease 0.3s forwards;
+        }
+
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .cta-button {
+            display: inline-block;
+            background: linear-gradient(45deg, #ff6b6b, #ff8e8e);
+            color: white;
+            padding: 15px 40px;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(255,107,107,0.3);
+            opacity: 0;
+            animation: slideInUp 1s ease 0.6s forwards;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(255,107,107,0.5);
+        }
+
+        /* Services Section */
+        .services {
+            padding: 100px 0;
+            background: #f8f9fa;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+            color: #333;
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            border-radius: 2px;
+        }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 4rem;
+        }
+
+        .service-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .service-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            transition: left 0.5s;
+        }
+
+        .service-card:hover::before {
+            left: 100%;
+        }
+
+        .service-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+        }
+
+        .service-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Estimation Section */
+        .estimation {
+            padding: 100px 0;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+        }
+
+        .estimation-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: start;
+        }
+
+        .calculator-card {
+            background: rgba(255,255,255,0.1);
+            padding: 2rem;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .calculator-form {
+            display: grid;
+            gap: 1.5rem;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .calculator-form input,
+        .calculator-form select {
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            background: rgba(255,255,255,0.9);
+            font-size: 1rem;
+            color: #333;
+        }
+
+        .calculator-form select {
+            cursor: pointer;
+        }
+
+        .calculate-btn {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            font-size: 1.1rem;
+        }
+
+        .calculate-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .estimation-result {
+            margin-top: 2rem;
+            padding: 2rem;
+            background: rgba(255,255,255,0.2);
+            border-radius: 15px;
+            text-align: center;
+            display: none;
+        }
+
+        .estimation-info {
+            background: rgba(255,255,255,0.1);
+            padding: 2rem;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+        }
+
+        .price-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .price-list li {
+            padding: 1rem 0;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .price-list li:last-child {
+            border-bottom: none;
+        }
+
+        /* Interior Designs Section */
+        .interior-designs {
+            padding: 100px 0;
+            background: #f8f9fa;
+        }
+
+        .design-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 3rem;
+            margin-top: 4rem;
+        }
+
+        .design-card {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+
+        .design-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+        }
+
+        .design-image {
+            height: 250px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .design-image::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 120px;
+            height: 120px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+            font-family: Arial, sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            backdrop-filter: blur(10px);
+        }
+
+        .design-card:nth-child(1) .design-image::before { content: '🛋️'; }
+        .design-card:nth-child(2) .design-image::before { content: '🍽️'; }
+        .design-card:nth-child(3) .design-image::before { content: '🛏️'; }
+        .design-card:nth-child(4) .design-image::before { content: '🚿'; }
+        .design-card:nth-child(5) .design-image::before { content: '🏢'; }
+        .design-card:nth-child(6) .design-image::before { content: '👶'; }
+
+        .design-card:nth-child(1) .design-image { background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%); }
+        .design-card:nth-child(2) .design-image { background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%); }
+        .design-card:nth-child(3) .design-image { background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%); }
+        .design-card:nth-child(4) .design-image { background: linear-gradient(135deg, #89f7fe 0%, #66a6ff 100%); }
+        .design-card:nth-child(5) .design-image { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+        .design-card:nth-child(6) .design-image { background: linear-gradient(135deg, #fad0c4 0%, #ffd1ff 100%); }
+
+        .design-content {
+            padding: 2rem;
+        }
+
+        .design-content h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: #333;
+        }
+
+        .design-features {
+            list-style: none;
+            padding: 0;
+            margin: 1rem 0;
+        }
+
+        .design-features li {
+            padding: 0.5rem 0;
+            color: #666;
+            display: flex;
+            align-items: center;
+        }
+
+        .design-features li::before {
+            content: '✓';
+            color: #28a745;
+            font-weight: bold;
+            margin-right: 0.5rem;
+        }
+
+        .design-price {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #667eea;
+            margin-top: 1rem;
+        }
+
+        /* Portfolio Section */
+        .portfolio {
+            padding: 100px 0;
+            background: white;
+        }
+
+        .portfolio-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-top: 4rem;
+        }
+
+        .portfolio-item {
+            position: relative;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            height: 300px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .portfolio-item:hover {
+            transform: scale(1.05);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+        }
+
+        .portfolio-content {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(transparent, rgba(0,0,0,0.8));
+            color: white;
+            padding: 2rem;
+        }
+
+        .portfolio-item::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100px;
+            height: 100px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+            font-family: Arial, sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            backdrop-filter: blur(10px);
+        }
+
+        .portfolio-item:nth-child(1)::before { content: '🏠'; }
+        .portfolio-item:nth-child(2)::before { content: '🛋️'; }
+        .portfolio-item:nth-child(3)::before { content: '🍽️'; }
+        .portfolio-item:nth-child(4)::before { content: '🛏️'; }
+        .portfolio-item:nth-child(5)::before { content: '🏢'; }
+        .portfolio-item:nth-child(6)::before { content: '🌿'; }
+
+        /* Contact Section */
+        .contact {
+            padding: 100px 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .contact-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+        }
+
+        .contact-info h3 {
+            font-size: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .contact-details {
+            font-size: 1.1rem;
+            line-height: 2;
+        }
+
+        .contact-form {
+            background: rgba(255,255,255,0.1);
+            padding: 2rem;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            background: rgba(255,255,255,0.9);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            background: white;
+            transform: scale(1.02);
+        }
+
+        .submit-btn {
+            background: linear-gradient(45deg, #ff6b6b, #ff8e8e);
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(255,107,107,0.3);
+        }
+
+        /* Footer */
+        footer {
+            background: #2c3e50;
+            color: white;
+            text-align: center;
+            padding: 2rem 0;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .contact-content {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+
+            .portfolio-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .design-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .estimation-container {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Scroll Animations */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="container">
+            <a href="#" class="logo">Elite Interiors</a>
+            <ul class="nav-links">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#services">Services</a></li>
+                <li><a href="#designs">Designs</a></li>
+                <li><a href="#estimation">Estimation</a></li>
+                <li><a href="#portfolio">Portfolio</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section id="home" class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <h1>Transform Your Space</h1>
+                <p>Professional Civil Engineer specializing in stunning interior designs that blend functionality with beauty</p>
+                <a href="#contact" class="cta-button">Get Your Dream Design</a>
+            </div>
+        </div>
+    </section>
+
+    <section id="services" class="services">
+        <div class="container">
+            <h2 class="section-title fade-in">Our Services</h2>
+            <div class="services-grid">
+                <div class="service-card fade-in">
+                    <div class="service-icon">🏗️</div>
+                    <h3>Structural Design</h3>
+                    <p>Complete structural analysis and design solutions for residential and commercial spaces with engineering precision.</p>
+                </div>
+                <div class="service-card fade-in">
+                    <div class="service-icon">🎨</div>
+                    <h3>Interior Design</h3>
+                    <p>Creative and functional interior design solutions that maximize space utilization while maintaining aesthetic appeal.</p>
+                </div>
+                <div class="service-card fade-in">
+                    <div class="service-icon">📐</div>
+                    <h3>Space Planning</h3>
+                    <p>Optimal space planning and layout design ensuring efficient flow and maximum functionality for every project.</p>
+                </div>
+                <div class="service-card fade-in">
+                    <div class="service-icon">🏠</div>
+                    <h3>Home Renovation</h3>
+                    <p>Complete home renovation services combining structural expertise with modern interior design trends.</p>
+                </div>
+                <div class="service-card fade-in">
+                    <div class="service-icon">🏢</div>
+                    <h3>Commercial Design</h3>
+                    <p>Professional commercial interior design services for offices, retail spaces, and hospitality venues.</p>
+                </div>
+                <div class="service-card fade-in">
+                    <div class="service-icon">💡</div>
+                    <h3>Consultation</h3>
+                    <p>Expert consultation services providing technical guidance and design recommendations for your projects.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="designs" class="interior-designs">
+        <div class="container">
+            <h2 class="section-title fade-in">Interior Design Packages</h2>
+            <div class="design-grid">
+                <div class="design-card fade-in">
+                    <div class="design-image"></div>
+                    <div class="design-content">
+                        <h3>Modern Living Room</h3>
+                        <p>Complete living room transformation with contemporary furniture and lighting solutions.</p>
+                        <ul class="design-features">
+                            <li>Modular sofa set with cushions</li>
+                            <li>Coffee table and side tables</li>
+                            <li>LED lighting setup</li>
+                            <li>Wall painting and decor</li>
+                            <li>Curtains and blinds</li>
+                        </ul>
+                        <div class="design-price">₹2,50,000 - ₹4,00,000</div>
+                    </div>
+                </div>
+                <div class="design-card fade-in">
+                    <div class="design-image"></div>
+                    <div class="design-content">
+                        <h3>Luxury Dining Room</h3>
+                        <p>Elegant dining space with premium materials and sophisticated design elements.</p>
+                        <ul class="design-features">
+                            <li>Dining table with 6 chairs</li>
+                            <li>Buffet unit with storage</li>
+                            <li>Chandelier lighting</li>
+                            <li>Wall cladding and paint</li>
+                            <li>Decorative accessories</li>
+                        </ul>
+                        <div class="design-price">₹3,00,000 - ₹5,50,000</div>
+                    </div>
+                </div>
+                <div class="design-card fade-in">
+                    <div class="design-image"></div>
+                    <div class="design-content">
+                        <h3>Master Bedroom Suite</h3>
+                        <p>Complete bedroom design with built-in wardrobes and luxury finishes.</p>
+                        <ul class="design-features">
+                            <li>King size bed with headboard</li>
+                            <li>Built-in wardrobe (8x8 ft)</li>
+                            <li>Bedside tables and lamps</li>
+                            <li>Ceiling design with lighting</li>
+                            <li>Flooring and wall treatment</li>
+                        </ul>
+                        <div class="design-price">₹3,50,000 - ₹6,00,000</div>
+                    </div>
+                </div>
+                <div class="design-card fade-in">
+                    <div class="design-image"></div>
+                    <div class="design-content">
+                        <h3>Modular Kitchen</h3>
+                        <p>Fully functional modular kitchen with premium appliances and storage solutions.</p>
+                        <ul class="design-features">
+                            <li>Modular cabinets (upper & lower)</li>
+                            <li>Granite/Quartz countertop</li>
+                            <li>Built-in appliances</li>
+                            <li>Tiles and electrical work</li>
+                            <li>Hardware and accessories</li>
+                        </ul>
+                        <div class="design-price">₹2,00,000 - ₹4,50,000</div>
+                    </div>
+                </div>
+                <div class="design-card fade-in">
+                    <div class="design-image"></div>
+                    <div class="design-content">
+                        <h3>Luxury Bathroom</h3>
+                        <p>Premium bathroom design with modern fixtures and elegant tile work.</p>
+                        <ul class="design-features">
+                            <li>Premium tiles and fixtures</li>
+                            <li>Shower cubicle with glass</li>
+                            <li>Vanity unit with mirror</li>
+                            <li>Lighting and ventilation</li>
+                            <li>Plumbing and electrical</li>
+                        </ul>
+                        <div class="design-price">₹1,50,000 - ₹3,50,000</div>
+                    </div>
+                </div>
+                <div class="design-card fade-in">
+                    <div class="design-image"></div>
+                    <div class="design-content">
+                        <h3>Kids Room Design</h3>
+                        <p>Colorful and functional kids room with study area and play zone.</p>
+                        <ul class="design-features">
+                            <li>Bunk bed or single bed</li>
+                            <li>Study table and chair</li>
+                            <li>Wardrobe with toy storage</li>
+                            <li>Colorful wall paintings</li>
+                            <li>Safety features included</li>
+                        </ul>
+                        <div class="design-price">₹1,80,000 - ₹3,00,000</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="estimation" class="estimation">
+        <div class="container">
+            <h2 class="section-title">Home Estimation Calculator</h2>
+            <div class="estimation-container">
+                <div class="calculator-card fade-in">
+                    <h3>Get Instant Estimate</h3>
+                    <form class="calculator-form" id="estimationForm">
+                        <div class="form-row">
+                            <input type="number" id="area" placeholder="Area (sq ft)" required>
+                            <select id="roomType" required>
+                                <option value="">Select Room Type</option>
+                                <option value="living">Living Room</option>
+                                <option value="bedroom">Bedroom</option>
+                                <option value="kitchen">Kitchen</option>
+                                <option value="bathroom">Bathroom</option>
+                                <option value="dining">Dining Room</option>
+                                <option value="complete">Complete Home</option>
+                            </select>
+                        </div>
+                        <div class="form-row">
+                            <select id="designType" required>
+                                <option value="">Design Type</option>
+                                <option value="basic">Basic Design</option>
+                                <option value="premium">Premium Design</option>
+                                <option value="luxury">Luxury Design</option>
+                            </select>
+                            <select id="timeline" required>
+                                <option value="">Timeline</option>
+                                <option value="30">30 Days</option>
+                                <option value="45">45 Days</option>
+                                <option value="60">60 Days</option>
+                                <option value="90">90+ Days</option>
+                            </select>
+                        </div>
+                        <input type="text" id="clientName" placeholder="Your Name" required>
+                        <input type="tel" id="clientPhone" placeholder="Your Phone Number" required>
+                        <button type="submit" class="calculate-btn">Calculate Estimate</button>
+                    </form>
+                    <div class="estimation-result" id="estimationResult">
+                        <h4>Estimated Cost</h4>
+                        <div id="estimatedAmount" style="font-size: 2rem; font-weight: bold; margin: 1rem 0;"></div>
+                        <p id="estimationDetails"></p>
+                    </div>
+                </div>
+                <div class="estimation-info fade-in">
+                    <h3>Pricing Guide</h3>
+                    <ul class="price-list">
+                        <li>
+                            <span>Basic Design (per sq ft)</span>
+                            <strong>₹800 - ₹1,200</strong>
+                        </li>
+                        <li>
+                            <span>Premium Design (per sq ft)</span>
+                            <strong>₹1,500 - ₹2,500</strong>
+                        </li>
+                        <li>
+                            <span>Luxury Design (per sq ft)</span>
+                            <strong>₹3,000 - ₹5,000</strong>
+                        </li>
+                        <li>
+                            <span>Structural Consultation</span>
+                            <strong>₹15,000 - ₹25,000</strong>
+                        </li>
+                        <li>
+                            <span>3D Design & Planning</span>
+                            <strong>₹20,000 - ₹35,000</strong>
+                        </li>
+                        <li>
+                            <span>Project Management</span>
+                            <strong>5% - 10% of total cost</strong>
+                        </li>
+                    </ul>
+                    <p style="margin-top: 2rem; font-size: 0.9rem; opacity: 0.8;">
+                        *Prices may vary based on materials, location, and specific requirements. 
+                        Get a personalized quote by filling the estimation form.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+        <div class="container">
+            <h2 class="section-title fade-in">Our Portfolio</h2>
+            <div class="portfolio-grid">
+                <div class="portfolio-item fade-in">
+                    <div class="portfolio-content">
+                        <h3>Modern Living Room</h3>
+                        <p>Contemporary design with clean lines and optimal space utilization</p>
+                    </div>
+                </div>
+                <div class="portfolio-item fade-in">
+                    <div class="portfolio-content">
+                        <h3>Luxury Bedroom Suite</h3>
+                        <p>Elegant bedroom design with custom built-in storage solutions</p>
+                    </div>
+                </div>
+                <div class="portfolio-item fade-in">
+                    <div class="portfolio-content">
+                        <h3>Gourmet Kitchen</h3>
+                        <p>Functional kitchen design with premium finishes and smart storage</p>
+                    </div>
+                </div>
+                <div class="portfolio-item fade-in">
+                    <div class="portfolio-content">
+                        <h3>Master Bedroom</h3>
+                        <p>Serene bedroom sanctuary with walk-in closet and en-suite</p>
+                    </div>
+                </div>
+                <div class="portfolio-item fade-in">
+                    <div class="portfolio-content">
+                        <h3>Office Space</h3>
+                        <p>Professional office design promoting productivity and comfort</p>
+                    </div>
+                </div>
+                <div class="portfolio-item fade-in">
+                    <div class="portfolio-content">
+                        <h3>Garden Patio</h3>
+                        <p>Outdoor living space design with natural elements integration</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="contact" class="contact">
+        <div class="container">
+            <h2 class="section-title">Get In Touch</h2>
+            <div class="contact-content">
+                <div class="contact-info fade-in">
+                    <h3>Let's Create Something Amazing</h3>
+                    <div class="contact-details">
+                        <p><strong>📍 Address:</strong><br>Indore, Madhya Pradesh<br>India</p>
+                        <p><strong>📞 Phone:</strong><br>+91 7970279927</p>
+                        <p><strong>✉️ Email:</strong><br>info@eliteinteriors.com</p>
+                        <p><strong>🕒 Hours:</strong><br>Mon - Sat: 9:00 AM - 7:00 PM<br>Sunday: By Appointment</p>
+                    </div>
+                </div>
+                <div class="contact-form fade-in">
+                    <form>
+                        <div class="form-group">
+                            <input type="text" placeholder="Your Name" required>
+                        </div>
+                        <div class="form-group">
+                            <input type="email" placeholder="Your Email" required>
+                        </div>
+                        <div class="form-group">
+                            <input type="tel" placeholder="Your Phone" required>
+                        </div>
+                        <div class="form-group">
+                            <textarea rows="5" placeholder="Tell us about your project..." required></textarea>
+                        </div>
+                        <button type="submit" class="submit-btn">Send Message</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 Elite Interiors. All rights reserved. | Designed with ❤️ for Beautiful Spaces</p>
+        </div>
+    </footer>
+
+    <script>
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Scroll animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.fade-in').forEach(el => {
+            observer.observe(el);
+        });
+
+        // Estimation Calculator
+        document.getElementById('estimationForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const area = parseInt(document.getElementById('area').value);
+            const roomType = document.getElementById('roomType').value;
+            const designType = document.getElementById('designType').value;
+            const timeline = document.getElementById('timeline').value;
+            const clientName = document.getElementById('clientName').value;
+            const clientPhone = document.getElementById('clientPhone').value;
+            
+            // Pricing logic
+            let basePrice = 0;
+            let multiplier = 1;
+            
+            // Base price per sq ft based on design type
+            switch(designType) {
+                case 'basic':
+                    basePrice = 1000;
+                    break;
+                case 'premium':
+                    basePrice = 2000;
+                    break;
+                case 'luxury':
+                    basePrice = 4000;
+                    break;
+            }
+            
+            // Room type multiplier
+            switch(roomType) {
+                case 'living':
+                    multiplier = 1.2;
+                    break;
+                case 'bedroom':
+                    multiplier = 1.0;
+                    break;
+                case 'kitchen':
+                    multiplier = 1.8;
+                    break;
+                case 'bathroom':
+                    multiplier = 2.0;
+                    break;
+                case 'dining':
+                    multiplier = 1.1;
+                    break;
+                case 'complete':
+                    multiplier = 0.8; // Discount for complete home
+                    break;
+            }
+            
+            // Timeline discount
+            let timelineDiscount = 1;
+            if (timeline === '90') {
+                timelineDiscount = 0.9; // 10% discount for longer timeline
+            }
+            
+            const estimatedCost = Math.round(area * basePrice * multiplier * timelineDiscount);
+            const formattedCost = new Intl.NumberFormat('en-IN', {
+                style: 'currency',
+                currency: 'INR',
+                minimumFractionDigits: 0
+            }).format(estimatedCost);
+            
+            // Show result
+            document.getElementById('estimatedAmount').textContent = formattedCost;
+            document.getElementById('estimationDetails').innerHTML = `
+                <strong>Dear ${clientName},</strong><br>
+                Based on your requirements:<br>
+                • ${area} sq ft ${roomType} with ${designType} design<br>
+                • Timeline: ${timeline} days<br>
+                • Includes: Design, materials, labor & supervision<br><br>
+                <em>We'll contact you at ${clientPhone} to discuss details.</em>
+            `;
+            document.getElementById('estimationResult').style.display = 'block';
+            
+            // Scroll to result
+            document.getElementById('estimationResult').scrollIntoView({
+                behavior: 'smooth',
+                block: 'nearest'
+            });
+        });
+
+        // Header background on scroll
+        window.addEventListener('scroll', () => {
+            const header = document.querySelector('header');
+            if (window.scrollY > 100) {
+                header.style.background = 'linear-gradient(135deg, rgba(102, 126, 234, 0.9) 0%, rgba(118, 75, 162, 0.9) 100%)';
+            } else {
+                header.style.background = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
+            }
+        });
+    </script>
+</body>
+</html>
